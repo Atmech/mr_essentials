@@ -1,0 +1,41 @@
+.swatch {
+  border: var(--border-thin);
+  overflow: hidden;
+}
+
+.color {
+  aspect-ratio: 3 / 2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: var(--space-4);
+}
+
+.name {
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-black);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+}
+
+.light {
+  color: var(--color-white);
+}
+
+.dark {
+  color: var(--color-black);
+}
+
+.meta {
+  padding: var(--space-3) var(--space-4);
+  border-top: var(--border-thin);
+}
+
+.hex {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  color: var(--color-mid-gray);
+}

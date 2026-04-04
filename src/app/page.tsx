@@ -1,66 +1,108 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Image from 'next/image';
+import styles from './page.module.css';
+import { Button } from '@/components/ui/Button';
 
 export default function Home() {
   return (
     <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+      {/* ── Hero Section ── */}
+      <section className={styles.heroSection}>
+        <div className={styles.heroImageContainer}>
+          <Image
+            src="/images/hero.png"
+            alt="MR Essentials Collection"
+            fill
+            className={styles.heroImage}
+            priority
+          />
+          <div className={styles.heroContent}>
+            <div className={styles.heroTextWrapper}>
+              <h1 className={styles.heroTitleOutline}>ARCHITECT</h1>
+              <h1 className={styles.heroTitleSolid}>UTILITY</h1>
+            </div>
+            <div className={styles.heroAction}>
+              <Button className={styles.saleButton} variant="primary">SHOP THE SALE</Button>
+            </div>
+          </div>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className={styles.heroBanner}>
+          <div className="container">
+            <div className={styles.heroBannerContent}>
+              <span>CORE ESSENTIALS</span>
+              <span>DROP 04/24</span>
+              <span>LIMITED STOCK</span>
+            </div>
+          </div>
         </div>
-      </main>
+      </section>
+
+      {/* ── Trending Section ── */}
+      <section className={`section container`}>
+        <div className={styles.trendingHeader}>
+          <h2 className={styles.trendingTitle}>TRENDING</h2>
+          <span className={styles.trendingSubtitle}>CURATED SELECTION</span>
+        </div>
+        
+        <div className={styles.trendingGrid}>
+          {/* Main Item */}
+          <div className={`${styles.productCard} ${styles.productMain}`}>
+            <div className={styles.productImageWrapper}>
+              <Image src="/images/heavy_hoodie.png" alt="HEAVY HOODIE 01" fill className={styles.productImage} />
+            </div>
+            <div className={styles.productInfo}>
+              <span className={styles.productCategory}>STAPLE COLLECTION</span>
+              <div className={styles.productFooter}>
+                <h3 className={styles.productName}>HEAVY HOODIE 01</h3>
+                <span className={styles.productPriceSale}>£120.00</span>
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.productCard}>
+            <div className={styles.productImageWrapperCompact}>
+              <Image src="/images/utility_trackpants.png" alt="UTILITY TRACKPANTS" fill className={styles.productImage} />
+            </div>
+            <div className={styles.productInfoCompact}>
+              <h3 className={styles.productNameCompact}>UTILITY TRACKPANTS</h3>
+              <span className={styles.productPrice}>£85.00</span>
+            </div>
+          </div>
+
+          <div className={styles.productCard}>
+            <div className={styles.productImageWrapperCompact}>
+              <Image src="/images/box_fit_tee.png" alt="BOX FIT TEE" fill className={styles.productImage} />
+            </div>
+            <div className={styles.productInfoCompact}>
+              <h3 className={styles.productNameCompact}>BOX FIT TEE</h3>
+              <span className={styles.productPrice}>£65.00</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Born in Structure Section ── */}
+      <section className={styles.structureSection}>
+        <h2 className={styles.structureBgText}>ONLINE</h2>
+        <div className={`container ${styles.structureGrid}`}>
+          <div className={styles.structureImageWrapper}>
+            <Image src="/images/black_fabric.png" alt="Fabric Texture" fill className={styles.structureImage} />
+          </div>
+          <div className={styles.structureContent}>
+            <h2 className={styles.structureTitle}>
+              BORN IN<br />
+              <span className={styles.structureTitleRed}>STRUCTURE</span>
+            </h2>
+            <p className={styles.structureDesc}>
+              MR ESSENTIALS is an architectural study in human
+              covering. Every seam, every gusset, and every
+              fiber is calculated to withstand the urban sprawl
+              while maintaining a silhouette of absolute
+              permanence.
+            </p>
+            <Button variant="secondary" className={styles.structureButton}>DISCOVER THE ETHOS</Button>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

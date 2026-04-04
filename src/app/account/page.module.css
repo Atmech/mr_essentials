@@ -1,0 +1,115 @@
+.container {
+  min-height: 100vh;
+  padding: var(--space-10) var(--gutter);
+  background: var(--color-white);
+  color: var(--color-black);
+}
+
+.header {
+  border-bottom: var(--border-medium);
+  padding-bottom: var(--space-6);
+  margin-bottom: var(--space-10);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.title {
+  font-size: var(--text-5xl);
+}
+
+.subtitle {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-mid-gray);
+}
+
+.logoutBtn {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-alert-red);
+  text-decoration: underline;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+}
+
+.sectionTitle {
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  border-bottom: var(--border-thin);
+  padding-bottom: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.orderList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.orderCard {
+  border: var(--border-medium);
+  padding: var(--space-6);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.orderMeta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.orderId {
+  font-family: var(--font-mono);
+  font-weight: var(--weight-bold);
+  font-size: var(--text-lg);
+}
+
+.orderDate {
+  font-family: var(--font-mono);
+  color: var(--color-mid-gray);
+  font-size: var(--text-sm);
+}
+
+.orderTotal {
+  font-size: var(--text-2xl);
+  font-family: var(--font-heading);
+}
+
+.statusWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-4);
+}
+
+.noOrders {
+  font-family: var(--font-mono);
+  color: var(--color-mid-gray);
+  padding: var(--space-10) 0;
+  text-align: center;
+  border: var(--border-thin);
+  border-style: dashed;
+}
+
+@media (max-width: 640px) {
+  .orderCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-6);
+  }
+  .statusWrap {
+    align-items: flex-start;
+    width: 100%;
+  }
+}

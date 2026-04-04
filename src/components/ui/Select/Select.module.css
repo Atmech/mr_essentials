@@ -1,0 +1,62 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  color: var(--color-black);
+}
+
+.selectWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.select {
+  width: 100%;
+  padding: var(--space-3) var(--space-10) var(--space-3) var(--space-4);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--color-black);
+  background-color: var(--color-white);
+  border: var(--border-medium);
+  border-radius: 0; /* Sharp corners */
+  outline: none;
+  appearance: none; /* Hide native arrow */
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-default);
+}
+
+.select:focus {
+  border-color: var(--color-alert-red);
+}
+
+.errorSelect {
+  border-color: var(--color-alert-red);
+}
+
+.iconWrapper {
+  position: absolute;
+  top: 50%;
+  right: var(--space-4);
+  transform: translateY(-50%);
+  pointer-events: none; /* Let clicks pass through to the select element */
+  color: var(--color-black);
+}
+
+.select:focus + .iconWrapper {
+  color: var(--color-alert-red);
+}
+
+.errorText {
+  color: var(--color-alert-red);
+  font-size: var(--text-sm);
+  font-family: var(--font-mono);
+  margin-top: var(--space-1);
+}
