@@ -94,10 +94,29 @@
   align-items: center;
   justify-content: center;
   transition: color var(--duration-fast);
+  position: relative;
 }
 
 .actionButton:hover {
   color: var(--color-alert-red);
+}
+
+.badge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background: var(--color-alert-red);
+  color: var(--color-white);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: var(--weight-bold);
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  line-height: 1;
 }
 
 /* Burger Menu */

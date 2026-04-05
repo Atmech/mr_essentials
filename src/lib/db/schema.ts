@@ -9,7 +9,7 @@ import {
   json,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import type { AdapterAccountType } from "next-auth/adapters";
+import type { AdapterAccount } from "next-auth/adapters";
 
 // --- NextAuth Core Tables ---
 
@@ -31,7 +31,7 @@ export const accounts = pgTable(
     userId: text("userId")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
-    type: text("type").$type<AdapterAccountType>().notNull(),
+    type: text("type").notNull(),
     provider: text("provider").notNull(),
     providerAccountId: text("providerAccountId").notNull(),
     refresh_token: text("refresh_token"),
@@ -76,8 +76,14 @@ export const products = pgTable("product", {
   description: text("description"),
   price: real("price").notNull(),
   images: json("images").$type<string[]>(),
-  category: text("category").notNull(), // Staple, Utility, Archive
+  sizes: json("sizes").$type<string[]>(),
+  colors: json("colors").$type<{name: string, hex: string}[]>(),
+  fabric: text("fabric"),
+  care: text("care"),
+  fit: text("fit"),
+  category: text("category").notNull(),
   inStock: integer("inStock").notNull().default(0),
+  features: json("features").$type<{title: string, description: string, image: string}[]>(),
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
 });
 
@@ -85,11 +91,13 @@ export const orders = pgTable("order", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  userId: text("userId").references(() => users.id, { onDelete: "set null" }), // Guest checkout might not have a userId
+  userId: text("userId").references(() => users.id, { onDelete: "set null" }),
   stripeSessionId: text("stripeSessionId").unique(),
   totalAmount: real("totalAmount").notNull(),
-  status: text("status").notNull().default("pending"), // pending, paid, shipped, delivered, cancelled
+  status: text("status").notNull().default("pending"),
   shippingAddress: json("shippingAddress"),
+  trackingNumber: text("trackingNumber"),
+  trackingUrl: text("trackingUrl"),
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
 });
 
@@ -104,13 +112,50 @@ export const orderItems = pgTable("order_item", {
     .notNull()
     .references(() => products.id),
   quantity: integer("quantity").notNull(),
-  price: real("price").notNull(), // Price at the time of purchase
+  price: real("price").notNull(),
+  size: text("size"),
+  color: text("color"),
+});
+
+export const wishlists = pgTable("wishlist", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  productId: integer("productId")
+    .notNull()
+    .references(() => products.id, { onDelete: "cascade" }),
+  createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
+});
+
+export const addresses = pgTable("address", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  label: text("label").notNull().default("Home"),
+  fullName: text("fullName").notNull(),
+  phone: text("phone"),
+  line1: text("line1").notNull(),
+  line2: text("line2"),
+  city: text("city").notNull(),
+  state: text("state"),
+  postalCode: text("postalCode").notNull(),
+  country: text("country").notNull().default("GB"),
+  isDefault: integer("isDefault").notNull().default(0),
+  createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
 });
 
 // --- Relations ---
 
 export const usersRelations = relations(users, ({ many }) => ({
   orders: many(orders),
+  wishlists: many(wishlists),
+  addresses: many(addresses),
 }));
 
 export const ordersRelations = relations(orders, ({ one, many }) => ({
@@ -130,4 +175,27 @@ export const orderItemsRelations = relations(orderItems, ({ one }) => ({
     fields: [orderItems.productId],
     references: [products.id],
   }),
+}));
+
+export const wishlistsRelations = relations(wishlists, ({ one }) => ({
+  user: one(users, {
+    fields: [wishlists.userId],
+    references: [users.id],
+  }),
+  product: one(products, {
+    fields: [wishlists.productId],
+    references: [products.id],
+  }),
+}));
+
+export const addressesRelations = relations(addresses, ({ one }) => ({
+  user: one(users, {
+    fields: [addresses.userId],
+    references: [users.id],
+  }),
+}));
+
+export const productsRelations = relations(products, ({ many }) => ({
+  wishlists: many(wishlists),
+  orderItems: many(orderItems),
 }));

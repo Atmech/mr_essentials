@@ -1,9 +1,8 @@
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions, DefaultSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { db } from "./db";
 import { accounts, sessions, users, verificationTokens } from "./db/schema";
-import { DefaultSession } from "next-auth";
 
 declare module "next-auth" {
   interface Session {
@@ -14,7 +13,7 @@ declare module "next-auth" {
   }
 }
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
   adapter: DrizzleAdapter(db, {
     usersTable: users,
     accountsTable: accounts,
@@ -29,12 +28,15 @@ export const authOptions = {
     // Potential Future: Add CredentialsProvider or custom OTP logic here
   ],
   callbacks: {
-    session: async ({ session, user }) => {
-      if (session?.user) {
-        session.user.id = user.id;
-        // The Drizzle adapter binds the user object from the DB directly here
-        // If we need phone we can fetch it, actually it's attached depending on adapter version,
-        // but id is the most important currently.
+    jwt: async ({ token, user }) => {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    session: async ({ session, token }) => {
+      if (session?.user && token?.id) {
+        session.user.id = token.id as string;
       }
       return session;
     },

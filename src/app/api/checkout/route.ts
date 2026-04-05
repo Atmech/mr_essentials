@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: '2025-02-24.acacia',
-});
+function getStripe() {
+  return new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+    apiVersion: '2025-02-24.acacia',
+  });
+}
 
 const YOUR_DOMAIN = process.env.NEXTAUTH_URL || 'http://localhost:3000';
 
@@ -29,13 +31,12 @@ export async function POST(req: Request) {
             productId: item.productId,
           },
         },
-        unit_amount: Math.round(item.price * 100), // Stripe expects amounts in pence/cents
+        unit_amount: Math.round(item.price * 100),
       },
       quantity: item.quantity,
     }));
 
-    // Create Checkout Sessions from body params.
-    const session = await stripe.checkout.sessions.create({
+    const session = await getStripe().checkout.sessions.create({
       line_items,
       mode: 'payment',
       success_url: `${YOUR_DOMAIN}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,

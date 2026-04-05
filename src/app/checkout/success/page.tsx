@@ -25,7 +25,7 @@ export default function CheckoutSuccessPage() {
           <Button variant="secondary">VIEW LEDGER</Button>
         </Link>
         <Link href="/shop" passHref legacyBehavior>
-          <Button variant="primary">RETURN TO INVENTORY</Button>
+          <Button variant="primary">RETURN TO COLLECTION</Button>
         </Link>
       </div>
     </div>

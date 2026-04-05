@@ -12,6 +12,7 @@
     "@auth/drizzle-adapter": "^1.11.1",
     "@neondatabase/serverless": "^1.0.2",
     "@stripe/stripe-js": "^9.0.1",
+    "@vercel/blob": "^2.3.3",
     "dotenv": "^17.4.0",
     "drizzle-orm": "^0.45.2",
     "lucide-react": "^1.7.0",

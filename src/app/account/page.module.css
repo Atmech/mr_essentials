@@ -1,8 +1,8 @@
 .container {
   min-height: 100vh;
   padding: var(--space-10) var(--gutter);
-  background: var(--color-white);
-  color: var(--color-black);
+  max-width: var(--max-width);
+  margin: 0 auto;
 }
 
 .header {
@@ -22,94 +22,73 @@
   font-family: var(--font-mono);
   font-size: var(--text-sm);
   color: var(--color-mid-gray);
+  margin-top: var(--space-2);
 }
 
-.logoutBtn {
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  color: var(--color-alert-red);
-  text-decoration: underline;
-  background: none;
-  border: none;
-  cursor: pointer;
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-6);
 }
 
-.dashboard {
+.card {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-10);
-}
-
-.sectionTitle {
-  font-family: var(--font-mono);
-  font-size: var(--text-lg);
-  font-weight: var(--weight-bold);
-  border-bottom: var(--border-thin);
-  padding-bottom: var(--space-2);
-  margin-bottom: var(--space-4);
-}
-
-.orderList {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.orderCard {
-  border: var(--border-medium);
-  padding: var(--space-6);
-  display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: var(--space-5);
+  padding: var(--space-6);
+  border: var(--border-medium);
+  text-decoration: none;
+  color: var(--color-black);
+  transition: all var(--duration-normal) var(--ease-default);
 }
 
-.orderMeta {
+.card:hover {
+  background: var(--color-offwhite);
+  box-shadow: 4px 4px 0 var(--color-black);
+  transform: translate(-2px, -2px);
+}
+
+.cardIcon {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
+  flex-shrink: 0;
+  color: var(--color-charcoal);
 }
 
-.orderId {
-  font-family: var(--font-mono);
-  font-weight: var(--weight-bold);
-  font-size: var(--text-lg);
+.cardContent {
+  flex: 1;
 }
 
-.orderDate {
-  font-family: var(--font-mono);
-  color: var(--color-mid-gray);
-  font-size: var(--text-sm);
-}
-
-.orderTotal {
-  font-size: var(--text-2xl);
+.cardTitle {
   font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  margin-bottom: var(--space-1);
 }
 
-.statusWrap {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: var(--space-4);
-}
-
-.noOrders {
+.cardDesc {
   font-family: var(--font-mono);
+  font-size: var(--text-xs);
   color: var(--color-mid-gray);
-  padding: var(--space-10) 0;
-  text-align: center;
-  border: var(--border-thin);
-  border-style: dashed;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
 }
 
-@media (max-width: 640px) {
-  .orderCard {
+.cardArrow {
+  color: var(--color-light-gray);
+  flex-shrink: 0;
+  transition: color var(--duration-fast);
+}
+
+.card:hover .cardArrow {
+  color: var(--color-alert-red);
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .header {
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--space-6);
-  }
-  .statusWrap {
-    align-items: flex-start;
-    width: 100%;
+    gap: var(--space-4);
   }
 }

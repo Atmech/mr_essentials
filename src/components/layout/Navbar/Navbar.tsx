@@ -3,23 +3,26 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Search, ShoppingBag, User } from 'lucide-react';
+import { Search, ShoppingBag, User, Heart } from 'lucide-react';
 import styles from './Navbar.module.css';
 import { useCartStore } from '@/lib/store/cart';
-
+import { useWishlistStore } from '@/lib/store/wishlist';
 import { useUIStore } from '@/lib/store/ui';
 
 const navLinks = [
-  { href: '/hoodies', label: 'Hoodies' },
-  { href: '/sweatpants', label: 'Sweatpants' },
-  { href: '/jackets', label: 'Jackets' },
+  { href: '/shop?category=hoodies', label: 'Hoodies' },
+  { href: '/shop?category=trackpants', label: 'Trackpants' },
+  { href: '/shop?category=tracksuits', label: 'Tracksuits' },
+  { href: '/shop?category=jackets', label: 'Jackets' },
   { href: '/shop', label: 'Shop All' },
 ];
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const openCart = useCartStore((state) => state.openCart);
-  const openSearch = useUIStore((state) => state.openSearch);
+  const openCart = useCartStore((s) => s.openCart);
+  const cartCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0));
+  const wishlistCount = useWishlistStore((s) => s.items.length);
+  const openSearch = useUIStore((s) => s.openSearch);
 
   return (
     <header className={styles.header}>
@@ -58,8 +61,13 @@ export default function Navbar() {
           <button className={styles.actionButton} aria-label="Search" onClick={openSearch}>
             <Search size={20} />
           </button>
+          <Link href="/account/wishlist" className={styles.actionButton} aria-label="Wishlist">
+            <Heart size={20} />
+            {wishlistCount > 0 && <span className={styles.badge}>{wishlistCount}</span>}
+          </Link>
           <button className={styles.actionButton} aria-label="Cart" onClick={openCart}>
             <ShoppingBag size={20} />
+            {cartCount > 0 && <span className={styles.badge}>{cartCount}</span>}
           </button>
           <button
             className={`${styles.burger} ${menuOpen ? styles.burgerOpen : ''}`}

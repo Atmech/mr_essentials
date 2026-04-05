@@ -3,11 +3,12 @@ import Stripe from 'stripe';
 import { db } from '@/lib/db';
 import { orders, orderItems } from '@/lib/db/schema';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: '2025-02-24.acacia',
-});
+function getStripe() {
+  return new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+    apiVersion: '2025-02-24.acacia',
+  });
+}
 
-const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 export async function POST(req: Request) {
   const body = await req.text();
@@ -16,7 +17,7 @@ export async function POST(req: Request) {
   let event: Stripe.Event;
 
   try {
-    event = stripe.webhooks.constructEvent(body, sig, endpointSecret!);
+    event = getStripe().webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET!);
   } catch (err: any) {
     return NextResponse.json({ error: `Webhook Error: ${err.message}` }, { status: 400 });
   }
@@ -26,7 +27,7 @@ export async function POST(req: Request) {
     const session = event.data.object as Stripe.Checkout.Session;
 
     // Retrieve line items from Stripe to get product info
-    const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
+    const lineItems = await getStripe().checkout.sessions.listLineItems(session.id);
 
     try {
       // Create Database Order
@@ -35,7 +36,7 @@ export async function POST(req: Request) {
         stripeSessionId: session.id,
         totalAmount: session.amount_total ? session.amount_total / 100 : 0,
         status: 'paid',
-        shippingAddress: session.shipping_details,
+        shippingAddress: (session as any).shipping_details || null,
       }).returning();
 
       // We typically map stripe product/price back to our DB. 

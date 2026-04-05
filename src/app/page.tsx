@@ -1,8 +1,17 @@
 import Image from 'next/image';
 import styles from './page.module.css';
 import { Button } from '@/components/ui/Button';
+import { db } from '@/lib/db';
+import { products } from '@/lib/db/schema';
+import Link from 'next/link';
+import ProductCard from '@/components/ui/ProductCard/ProductCard';
+import { desc } from 'drizzle-orm';
 
-export default function Home() {
+export const dynamic = 'force-dynamic';
+
+export default async function Home() {
+  const liveProducts = await db.select().from(products).orderBy(desc(products.id)).limit(4);
+
   return (
     <div className={styles.page}>
       {/* ── Hero Section ── */}
@@ -21,7 +30,9 @@ export default function Home() {
               <h1 className={styles.heroTitleSolid}>UTILITY</h1>
             </div>
             <div className={styles.heroAction}>
-              <Button className={styles.saleButton} variant="primary">SHOP THE SALE</Button>
+              <Link href="/shop" prefetch={false}>
+                <Button className={styles.saleButton} variant="primary">SHOP THE SALE</Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -43,40 +54,46 @@ export default function Home() {
           <span className={styles.trendingSubtitle}>CURATED SELECTION</span>
         </div>
         
-        <div className={styles.trendingGrid}>
-          {/* Main Item */}
-          <div className={`${styles.productCard} ${styles.productMain}`}>
-            <div className={styles.productImageWrapper}>
-              <Image src="/images/heavy_hoodie.png" alt="HEAVY HOODIE 01" fill className={styles.productImage} />
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+          gap: 'var(--space-6)',
+          width: '100%',
+          marginBottom: 'var(--space-12)'
+        }}>
+          {liveProducts.length === 0 ? (
+            <div style={{
+              gridColumn: '1 / -1',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: 'var(--space-20) var(--space-6)',
+              textAlign: 'center',
+            }}>
+              <p style={{ fontSize: 'var(--text-6xl)', color: 'var(--color-light-gray)', marginBottom: 'var(--space-4)' }}>∅</p>
+              <p style={{ fontFamily: 'var(--font-heading)', fontSize: 'var(--text-3xl)', color: 'var(--color-charcoal)', marginBottom: 'var(--space-2)' }}>NO PRODUCTS AVAILABLE</p>
+              <p style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--text-sm)', color: 'var(--color-mid-gray)' }}>Check back later for our new drop.</p>
             </div>
-            <div className={styles.productInfo}>
-              <span className={styles.productCategory}>STAPLE COLLECTION</span>
-              <div className={styles.productFooter}>
-                <h3 className={styles.productName}>HEAVY HOODIE 01</h3>
-                <span className={styles.productPriceSale}>£120.00</span>
-              </div>
-            </div>
-          </div>
-
-          <div className={styles.productCard}>
-            <div className={styles.productImageWrapperCompact}>
-              <Image src="/images/utility_trackpants.png" alt="UTILITY TRACKPANTS" fill className={styles.productImage} />
-            </div>
-            <div className={styles.productInfoCompact}>
-              <h3 className={styles.productNameCompact}>UTILITY TRACKPANTS</h3>
-              <span className={styles.productPrice}>£85.00</span>
-            </div>
-          </div>
-
-          <div className={styles.productCard}>
-            <div className={styles.productImageWrapperCompact}>
-              <Image src="/images/box_fit_tee.png" alt="BOX FIT TEE" fill className={styles.productImage} />
-            </div>
-            <div className={styles.productInfoCompact}>
-              <h3 className={styles.productNameCompact}>BOX FIT TEE</h3>
-              <span className={styles.productPrice}>£65.00</span>
-            </div>
-          </div>
+          ) : (
+            liveProducts.map((product) => (
+              <Link key={product.id} href={`/shop/${product.slug}`} style={{ textDecoration: 'none', display: 'flex' }}>
+                <ProductCard
+                  title={product.name}
+                  description={product.category || 'Staple'}
+                  image={product.images?.[0] || '/logo.jpeg'}
+                  price={`£${product.price.toFixed(2)}`}
+                  ctaLabel="View details"
+                  badge={product.inStock < 5 ? 'Limited' : undefined}
+                />
+              </Link>
+            ))
+          )}
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <Link href="/shop" prefetch={false}>
+             <Button variant="secondary" style={{ color: 'var(--color-black)', borderColor: 'var(--color-black)' }}>VIEW ENTIRE LOG</Button>
+          </Link>
         </div>
       </section>
 
@@ -99,7 +116,9 @@ export default function Home() {
               while maintaining a silhouette of absolute
               permanence.
             </p>
-            <Button variant="secondary" className={styles.structureButton}>DISCOVER THE ETHOS</Button>
+            <Link href="/ethos" prefetch={false}>
+              <Button variant="secondary" className={styles.structureButton}>DISCOVER THE ETHOS</Button>
+            </Link>
           </div>
         </div>
       </section>

@@ -47,9 +47,14 @@ export default function LoginPage() {
           <span>CONTINUE WITH GOOGLE</span>
         </Button>
 
-        <Link href="/shop" className={styles.metaLink}>
-          RETURN TO INVENTORY
-        </Link>
+        <div className={styles.linksContainer}>
+          <Link href="/shop" className={styles.metaLink}>
+            RETURN TO COLLECTION
+          </Link>
+          <Link href="/admin/login" className={styles.metaLink}>
+            ADMIN LOGIN
+          </Link>
+        </div>
       </div>
     </div>
   );

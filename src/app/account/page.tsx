@@ -1,65 +1,81 @@
-'use client';
-
 import React from 'react';
+import Link from 'next/link';
 import styles from './page.module.css';
-import Badge from '@/components/ui/Badge/Badge';
-import Button from '@/components/ui/Button/Button';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { redirect } from 'next/navigation';
+import { db } from '@/lib/db';
+import { orders, wishlists } from '@/lib/db/schema';
+import { eq, count } from 'drizzle-orm';
+import { AccountSignOut } from './AccountSignOut';
+import { Package, Heart, MapPin, UserCircle, ChevronRight } from 'lucide-react';
 
-export default function AccountPage() {
-  const handleLogout = () => {
-    // POC fake logout
-    window.location.href = '/account/login';
-  };
+export const dynamic = 'force-dynamic';
 
-  // Mock orders
-  const orders = [
-    { id: '#ORD-0921', date: '2026-03-12', total: 120.00, status: 'DELIVERED' },
-    { id: '#ORD-1154', date: '2026-04-01', total: 205.00, status: 'PROCESSING' }
+export const metadata = {
+  title: 'My Account — MR Essentials',
+};
+
+export default async function AccountPage() {
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user) {
+    redirect('/account/login');
+  }
+
+  const [orderCount] = await db.select({ value: count() }).from(orders).where(eq(orders.userId, session.user.id));
+  const [wishlistCount] = await db.select({ value: count() }).from(wishlists).where(eq(wishlists.userId, session.user.id));
+
+  const accountSections = [
+    {
+      href: '/account/orders',
+      icon: <Package size={24} />,
+      title: 'ORDER HISTORY',
+      desc: `${orderCount?.value || 0} orders placed`,
+    },
+    {
+      href: '/account/wishlist',
+      icon: <Heart size={24} />,
+      title: 'WISHLIST',
+      desc: `${wishlistCount?.value || 0} saved items`,
+    },
+    {
+      href: '/account/addresses',
+      icon: <MapPin size={24} />,
+      title: 'ADDRESS BOOK',
+      desc: 'Manage shipping addresses',
+    },
+    {
+      href: '/account/profile',
+      icon: <UserCircle size={24} />,
+      title: 'PROFILE',
+      desc: 'Edit your details',
+    },
   ];
 
   return (
     <div className={styles.container}>
       <header className={styles.header}>
         <div>
-          <h1 className={styles.title}>LEDGER</h1>
-          <p className={styles.subtitle}>USER_ID: 10A-F9</p>
+          <h1 className={styles.title}>MY ACCOUNT</h1>
+          <p className={styles.subtitle}>
+            {session.user.name?.toUpperCase() || session.user.email}
+          </p>
         </div>
-        <button className={styles.logoutBtn} onClick={handleLogout}>TERMINATE SESSION</button>
+        <AccountSignOut />
       </header>
 
-      <div className={styles.dashboard}>
-        <section>
-          <h2 className={styles.sectionTitle}>ACQUISITION HISTORY</h2>
-          <div className={styles.orderList}>
-            {orders.length === 0 ? (
-              <div className={styles.noOrders}>NO RECORDS FOUND IN REGISTRY</div>
-            ) : (
-              orders.map(order => (
-                <div key={order.id} className={styles.orderCard}>
-                  <div className={styles.orderMeta}>
-                    <span className={styles.orderId}>{order.id}</span>
-                    <span className={styles.orderDate}>{order.date}</span>
-                    <span className={styles.orderTotal}>£{order.total.toFixed(2)}</span>
-                  </div>
-                  <div className={styles.statusWrap}>
-                    <Badge variant={order.status === 'DELIVERED' ? 'default' : 'alert'}>{order.status}</Badge>
-                    <Button variant="secondary" size="sm">VIEW DETAILS</Button>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </section>
-
-        <section>
-          <h2 className={styles.sectionTitle}>SHIPPING REGISTRY</h2>
-          <div className={styles.orderCard}>
-            <div className={styles.orderMeta}>
-              <span className={styles.orderId}>PRIMARY DIRECTIVE</span>
-              <span className={styles.orderDate}>123 BRUTALIST AVE, SECTOR 4</span>
+      <div className={styles.grid}>
+        {accountSections.map((section) => (
+          <Link key={section.href} href={section.href} className={styles.card}>
+            <div className={styles.cardIcon}>{section.icon}</div>
+            <div className={styles.cardContent}>
+              <h2 className={styles.cardTitle}>{section.title}</h2>
+              <p className={styles.cardDesc}>{section.desc}</p>
             </div>
-          </div>
-        </section>
+            <ChevronRight size={20} className={styles.cardArrow} />
+          </Link>
+        ))}
       </div>
     </div>
   );

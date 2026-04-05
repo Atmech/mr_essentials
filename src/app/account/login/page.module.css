@@ -66,10 +66,22 @@
   margin-left: .25em;
 }
 
+.linksContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
 .metaLink {
   text-align: center;
   font-family: var(--font-mono);
   font-size: var(--text-sm);
   text-decoration: underline;
-  margin-top: var(--space-4);
+  color: var(--color-dark-gray);
+  transition: color var(--duration-fast) var(--ease-in-out);
+}
+
+.metaLink:hover {
+  color: var(--color-black);
 }

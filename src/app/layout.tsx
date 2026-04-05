@@ -5,6 +5,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { CartDrawer } from "@/components/layout/CartDrawer";
 import { SearchOverlay } from "@/components/layout/SearchOverlay";
+import { ToastContainer } from "@/components/layout/ToastContainer";
 import "./globals.css";
 
 const inter = Inter({
@@ -21,9 +22,9 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MR Essentials — Blood Line Design System",
+  title: "MR Essentials — Engineered Garments",
   description:
-    "An echonic design language built on the tension between clinical precision and raw, brutalist expression.",
+    "Architectural apparel built on the tension between clinical precision and raw, brutalist expression.",
 };
 
 export default function RootLayout({
@@ -45,6 +46,7 @@ export default function RootLayout({
         <Footer />
         <CartDrawer />
         <SearchOverlay />
+        <ToastContainer />
       </body>
     </html>
   );

@@ -2,19 +2,23 @@ import Link from 'next/link';
 import styles from './Footer.module.css';
 
 const footerLinks = {
+  shop: [
+    { href: '/shop', label: 'Shop All' },
+    { href: '/shop?category=hoodies', label: 'Hoodies' },
+    { href: '/shop?category=trackpants', label: 'Trackpants' },
+    { href: '/shop?category=tracksuits', label: 'Tracksuits' },
+    { href: '/shop?category=jackets', label: 'Jackets' },
+  ],
   company: [
-    { href: '/about', label: 'Studio' },
-    { href: '/press', label: 'Press' },
-    { href: '/legal', label: 'Legal' },
+    { href: '/ethos', label: 'Our Ethos' },
+    { href: '/lookbook', label: 'Lookbook' },
+    { href: '/shipping', label: 'Shipping & Returns' },
+    { href: '/account', label: 'My Account' },
   ],
   social: [
     { href: '#', label: 'Instagram' },
     { href: '#', label: 'Twitter' },
-    { href: '#', label: 'LinkedIn' },
-  ],
-  contact: [
-    { label: 'Suite 201' },
-    { label: 'Brooklyn 11201' },
+    { href: '#', label: 'TikTok' },
   ],
 };
 
@@ -24,8 +28,20 @@ export default function Footer() {
       <div className={`${styles.inner} container`}>
         <div className={styles.grid}>
           <div className={styles.brand}>
-            <p className={styles.brandName}>Bloodline Editorial Design System</p>
-            <p className={styles.copyright}>All rights reserved &amp; held.</p>
+            <p className={styles.brandName}>MR ESSENTIALS</p>
+            <p className={styles.copyright}>© {new Date().getFullYear()} MR Essentials. All rights reserved.</p>
+          </div>
+          <div className={styles.column}>
+            <h4 className={styles.columnTitle}>Shop</h4>
+            <ul className={styles.list}>
+              {footerLinks.shop.map((link) => (
+                <li key={link.label}>
+                  <Link href={link.href} className={styles.footerLink}>
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
           <div className={styles.column}>
             <h4 className={styles.columnTitle}>Company</h4>
@@ -47,16 +63,6 @@ export default function Footer() {
                   <Link href={link.href} className={styles.footerLink}>
                     {link.label}
                   </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className={styles.column}>
-            <h4 className={styles.columnTitle}>Location</h4>
-            <ul className={styles.list}>
-              {footerLinks.contact.map((item) => (
-                <li key={item.label} className={styles.footerLink}>
-                  {item.label}
                 </li>
               ))}
             </ul>

@@ -21,7 +21,7 @@ export default function ProductCard({
   title,
   description,
   price,
-  ctaLabel = 'Add to Inventory',
+  ctaLabel = 'Add to Cart',
   onCtaClick,
 }: ProductCardProps) {
   return (
@@ -44,7 +44,9 @@ export default function ProductCard({
         <h3 className={styles.title}>{title}</h3>
         <p className={styles.description}>{description}</p>
         <div className={styles.footer}>
-          <span className={styles.price}>{price}</span>
+          <div className={styles.priceContainer}>
+            <span className={styles.price}>{price}</span>
+          </div>
           <Button variant="primary" size="sm" onClick={onCtaClick}>
             {ctaLabel}
           </Button>

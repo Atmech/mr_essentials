@@ -49,9 +49,11 @@ export const useCartStore = create<CartState>()(
         })),
       updateQuantity: (id, quantity) =>
         set((state) => ({
-          items: state.items.map((i) =>
-            i.id === id ? { ...i, quantity: Math.max(0, quantity) } : i
-          ),
+          items: quantity <= 0
+            ? state.items.filter((i) => i.id !== id)
+            : state.items.map((i) =>
+                i.id === id ? { ...i, quantity } : i
+              ),
         })),
       clearCart: () => set({ items: [] }),
       toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
