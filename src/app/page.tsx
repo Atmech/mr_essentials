@@ -10,7 +10,24 @@ import { desc } from 'drizzle-orm';
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  const liveProducts = await db.select().from(products).orderBy(desc(products.id)).limit(4);
+  let liveProducts: typeof products.$inferSelect[] = [];
+  let serverError: string | null = null;
+  
+  try {
+    liveProducts = await db.select().from(products).orderBy(desc(products.id)).limit(4);
+  } catch (error: any) {
+    serverError = error.message || String(error);
+  }
+
+  if (serverError) {
+    return (
+      <div style={{ padding: 'var(--space-20)', textAlign: 'center', color: 'red' }}>
+        <h2>Server Component Error</h2>
+        <p style={{ fontFamily: 'monospace' }}>{serverError}</p>
+        <p>This means your database connection failed at runtime. Did you add DATABASE_URL to your Vercel Environment Variables?</p>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.page}>
