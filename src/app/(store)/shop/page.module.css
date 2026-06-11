@@ -1,0 +1,380 @@
+.shopLayout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── Filter bar ── */
+.filterBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: 0 var(--gutter);
+  height: 52px;
+  border-bottom: var(--border-thin);
+  background: var(--color-white);
+  position: sticky;
+  top: 64px; /* navbar height */
+  z-index: var(--z-dropdown);
+}
+
+.filterBarLeft {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.filterBarTitle {
+  font-family: var(--font-heading);
+  font-size: var(--text-base);
+  letter-spacing: var(--tracking-wider);
+}
+
+.filterBarCount {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-mid-gray);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+}
+
+/* Category pill nav */
+.categoryPills {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.categoryPills::-webkit-scrollbar {
+  display: none;
+}
+
+.pill {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid transparent;
+  background: none;
+  cursor: pointer;
+  color: var(--color-mid-gray);
+  white-space: nowrap;
+  transition: color var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out);
+}
+
+.pill:active {
+  transform: scale(0.97);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .pill:hover {
+    color: var(--color-black);
+    border-color: var(--color-light-gray);
+  }
+}
+
+.pillActive {
+  color: var(--color-black);
+  border-color: var(--color-black);
+  font-weight: var(--weight-bold);
+}
+
+.filterBarRight {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-shrink: 0;
+}
+
+/* Sort select */
+.sortWrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.sortLabel {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  color: var(--color-mid-gray);
+}
+
+.sortSelect {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--color-black);
+  appearance: none;
+  padding-right: var(--space-4);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23000' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0 center;
+  background-size: 10px;
+}
+
+.sortSelect:focus {
+  outline: none;
+}
+
+/* Mobile filter button — hidden on desktop */
+.mobileFilterBtn {
+  display: none;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  background: none;
+  border: var(--border-thin);
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+  color: var(--color-black);
+  position: relative;
+}
+
+.filterDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-alert-red);
+  position: absolute;
+  top: 4px;
+  right: 4px;
+}
+
+/* Active filter chips */
+.activeFilters {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--gutter);
+  border-bottom: var(--border-thin);
+  background: var(--color-offwhite);
+}
+
+.activeChip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  padding: var(--space-1) var(--space-3);
+  border: var(--border-thin);
+  background: var(--color-white);
+  cursor: pointer;
+  color: var(--color-black);
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .activeChip:hover {
+    background: var(--color-light-gray);
+  }
+}
+
+/* ── Product grid — full width ── */
+.productGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+
+.productLink {
+  text-decoration: none;
+  display: block;
+}
+
+.productCardWrap {
+  position: relative;
+  width: 100%;
+}
+
+.productCardWrap > article {
+  border-right: var(--border-thin);
+  border-bottom: var(--border-thin);
+  border-radius: 0;
+}
+
+/* Wishlist button */
+.wishlistBtn {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  z-index: 3;
+  background: rgba(255,255,255,0.9);
+  border: var(--border-thin);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--color-charcoal);
+  transition: color var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .wishlistBtn:hover {
+    color: var(--color-alert-red);
+    border-color: var(--color-alert-red);
+  }
+}
+
+.wishlistBtn.wishlisted {
+  color: var(--color-alert-red);
+  background: var(--color-alert-red-light);
+  border-color: var(--color-alert-red);
+}
+
+/* Empty state */
+.emptyState {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-20) var(--space-6);
+  text-align: center;
+}
+
+.emptyIcon {
+  font-size: var(--text-6xl);
+  color: var(--color-light-gray);
+  margin-bottom: var(--space-4);
+}
+
+.emptyText {
+  font-family: var(--font-heading);
+  font-size: var(--text-3xl);
+  color: var(--color-charcoal);
+  margin-bottom: var(--space-2);
+}
+
+.emptySubtext {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-mid-gray);
+}
+
+/* ── Mobile filter drawer ── */
+.mobileDrawerOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: var(--z-modal);
+}
+
+.mobileDrawer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--color-white);
+  border-top: var(--border-medium);
+  padding: var(--space-6);
+  z-index: calc(var(--z-modal) + 1);
+  max-height: 80vh;
+  overflow-y: auto;
+  transform: translateY(0);
+  transition: transform var(--duration-normal) var(--ease-drawer);
+  @starting-style {
+    transform: translateY(100%);
+  }
+}
+
+.mobileDrawerHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-6);
+}
+
+.mobileDrawerTitle {
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  letter-spacing: var(--tracking-wider);
+}
+
+.mobileDrawerSection {
+  margin-bottom: var(--space-6);
+}
+
+.mobileDrawerLabel {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-widest);
+  color: var(--color-mid-gray);
+  text-transform: uppercase;
+  margin-bottom: var(--space-3);
+}
+
+.mobileDrawerItem {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  padding: var(--space-3) 0;
+  border: none;
+  border-bottom: var(--border-thin);
+  background: none;
+  cursor: pointer;
+  color: var(--color-charcoal);
+}
+
+.mobileDrawerItemActive {
+  color: var(--color-black);
+  font-weight: var(--weight-bold);
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .productGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .filterBar {
+    top: 56px;
+    height: 48px;
+  }
+
+  .categoryPills {
+    display: none;
+  }
+
+  .mobileFilterBtn {
+    display: flex;
+  }
+
+  .sortWrap {
+    display: none;
+  }
+
+  .productGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .productGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

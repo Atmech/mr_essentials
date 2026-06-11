@@ -2,15 +2,16 @@
   position: fixed;
   inset: 0;
   background: var(--color-white);
-  z-index: calc(var(--z-modal) + 10); /* very high */
+  z-index: calc(var(--z-modal) + 10);
   display: flex;
   flex-direction: column;
-  animation: slideDown var(--duration-fast) var(--ease-out);
-}
-
-@keyframes slideDown {
-  from { transform: translateY(-100%); }
-  to { transform: translateY(0); }
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 150ms var(--ease-out), transform 150ms var(--ease-out);
+  @starting-style {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
 }
 
 .header {

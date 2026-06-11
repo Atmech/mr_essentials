@@ -100,7 +100,7 @@ export const SearchOverlay = () => {
               <span className={styles.resultName}>{product.name}</span>
               <span className={styles.resultCategory}>{product.category}</span>
             </div>
-            <span className={styles.resultPrice}>£{product.price.toFixed(2)}</span>
+            <span className={styles.resultPrice}>£{(product.price / 100).toFixed(2)}</span>
           </Link>
         ))}
       </div>

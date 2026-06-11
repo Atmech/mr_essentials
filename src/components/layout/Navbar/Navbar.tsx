@@ -10,11 +10,9 @@ import { useWishlistStore } from '@/lib/store/wishlist';
 import { useUIStore } from '@/lib/store/ui';
 
 const navLinks = [
-  { href: '/shop?category=hoodies', label: 'Hoodies' },
-  { href: '/shop?category=trackpants', label: 'Trackpants' },
-  { href: '/shop?category=tracksuits', label: 'Tracksuits' },
-  { href: '/shop?category=jackets', label: 'Jackets' },
-  { href: '/shop', label: 'Shop All' },
+  { href: '/shop?gender=men', label: 'Men' },
+  { href: '/shop?gender=kids', label: 'Kids' },
+  { href: '/shop?sale=true', label: 'Sale' },
 ];
 
 export default function Navbar() {

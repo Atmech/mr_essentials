@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import { createProduct } from '../actions';
+import { CATEGORIES, GENDERS } from '@/lib/constants';
 import { useRouter } from 'next/navigation';
 
 export default function NewProductPage() {
@@ -50,7 +51,7 @@ export default function NewProductPage() {
       }
     }
     
-    let featuresData = [];
+    const featuresData: { title: string; description: string; image: string }[] = [];
     if (features.length > 0 && !hasUploadError) {
       try {
         for (const feature of features) {
@@ -93,13 +94,14 @@ export default function NewProductPage() {
     try {
       // Trigger Server Action to save product to DB
       await createProduct(formData);
-    } catch (e: any) {
-      if (e?.message && e.message.includes('NEXT_REDIRECT')) {
+    } catch (e) {
+      const message = e instanceof Error ? e.message : '';
+      if (message.includes('NEXT_REDIRECT')) {
         throw e;
       }
       setIsUploading(false);
       isSubmitting.current = false;
-      alert('Failed to save the product. Check if the URL Slug is unique.');
+      alert(message || 'Failed to save the product. Check if the URL Slug is unique.');
     }
   };
 
@@ -122,21 +124,35 @@ export default function NewProductPage() {
           <input required name="slug" type="text" style={{ width: '100%', padding: 'var(--space-3)', border: 'var(--border-thin)' }} />
         </div>
 
-        {/* Category & Price */}
+        {/* Category & Gender */}
         <div style={{ display: 'flex', gap: 'var(--space-4)' }}>
           <div style={{ flex: 1 }}>
             <label className="label" style={{ display: 'block', marginBottom: 'var(--space-2)' }}>Category</label>
             <select required name="category" style={{ width: '100%', padding: 'var(--space-3)', border: 'var(--border-thin)' }}>
-              <option value="Hoodies">Hoodies</option>
-              <option value="Sweatpants">Sweatpants</option>
-              <option value="Jackets">Jackets</option>
-              <option value="T-Shirts">T-Shirts</option>
-              <option value="Accessories">Accessories</option>
+              {CATEGORIES.map((c) => (
+                <option key={c.value} value={c.value}>{c.label}</option>
+              ))}
             </select>
           </div>
           <div style={{ flex: 1 }}>
+            <label className="label" style={{ display: 'block', marginBottom: 'var(--space-2)' }}>Gender</label>
+            <select required name="gender" defaultValue="unisex" style={{ width: '100%', padding: 'var(--space-3)', border: 'var(--border-thin)' }}>
+              {GENDERS.map((g) => (
+                <option key={g.value} value={g.value}>{g.label}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Price & Sale Price */}
+        <div style={{ display: 'flex', gap: 'var(--space-4)' }}>
+          <div style={{ flex: 1 }}>
             <label className="label" style={{ display: 'block', marginBottom: 'var(--space-2)' }}>Price (£)</label>
-            <input required name="price" type="number" step="0.01" style={{ width: '100%', padding: 'var(--space-3)', border: 'var(--border-thin)' }} />
+            <input required name="price" type="number" step="0.01" min="0" style={{ width: '100%', padding: 'var(--space-3)', border: 'var(--border-thin)' }} />
+          </div>
+          <div style={{ flex: 1 }}>
+            <label className="label" style={{ display: 'block', marginBottom: 'var(--space-2)' }}>Sale Price (£) — optional</label>
+            <input name="salePrice" type="number" step="0.01" min="0" placeholder="Leave blank if not on sale" style={{ width: '100%', padding: 'var(--space-3)', border: 'var(--border-thin)' }} />
           </div>
         </div>
 

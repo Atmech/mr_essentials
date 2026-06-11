@@ -5,9 +5,12 @@ const footerLinks = {
   shop: [
     { href: '/shop', label: 'Shop All' },
     { href: '/shop?category=hoodies', label: 'Hoodies' },
-    { href: '/shop?category=trackpants', label: 'Trackpants' },
+    { href: '/shop?category=tees', label: 'Tees' },
+    { href: '/shop?category=shorts', label: 'Shorts' },
+    { href: '/shop?category=pants', label: 'Pants' },
     { href: '/shop?category=tracksuits', label: 'Tracksuits' },
     { href: '/shop?category=jackets', label: 'Jackets' },
+    { href: '/shop?category=accessories', label: 'Accessories' },
   ],
   company: [
     { href: '/ethos', label: 'Our Ethos' },

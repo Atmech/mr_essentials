@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import styles from './ProductCard.module.css';
 import Badge from '../Badge/Badge';
-import Button from '../Button/Button';
 
 interface ProductCardProps {
   badge?: string;
@@ -10,6 +9,8 @@ interface ProductCardProps {
   title: string;
   description: string;
   price: string;
+  /** When set, `price` is shown as the sale price and this is struck through. */
+  originalPrice?: string;
   ctaLabel?: string;
   onCtaClick?: () => void;
 }
@@ -21,8 +22,7 @@ export default function ProductCard({
   title,
   description,
   price,
-  ctaLabel = 'Add to Cart',
-  onCtaClick,
+  originalPrice,
 }: ProductCardProps) {
   return (
     <article className={styles.card}>
@@ -37,19 +37,21 @@ export default function ProductCard({
           alt={title}
           fill
           className={styles.image}
-          sizes="(max-width: 768px) 100vw, 50vw"
+          sizes="(max-width: 768px) 50vw, 25vw"
         />
       </div>
       <div className={styles.content}>
         <h3 className={styles.title}>{title}</h3>
         <p className={styles.description}>{description}</p>
         <div className={styles.footer}>
-          <div className={styles.priceContainer}>
+          {originalPrice ? (
+            <span className={styles.price}>
+              <span className={styles.salePrice}>{price}</span>{' '}
+              <s className={styles.originalPrice}>{originalPrice}</s>
+            </span>
+          ) : (
             <span className={styles.price}>{price}</span>
-          </div>
-          <Button variant="primary" size="sm" onClick={onCtaClick}>
-            {ctaLabel}
-          </Button>
+          )}
         </div>
       </div>
     </article>

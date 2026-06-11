@@ -1,15 +1,28 @@
 import {
   timestamp,
   pgTable,
+  pgEnum,
   text,
   primaryKey,
   integer,
   serial,
-  real,
   json,
+  boolean,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import type { AdapterAccount } from "next-auth/adapters";
+
+// --- Enums (single source of truth shared with src/lib/constants.ts) ---
+export const productCategory = pgEnum("product_category", [
+  "hoodies",
+  "tees",
+  "shorts",
+  "pants",
+  "tracksuits",
+  "jackets",
+  "accessories",
+]);
+export const productGender = pgEnum("product_gender", ["men", "kids", "unisex"]);
+export const userRole = pgEnum("user_role", ["user", "admin"]);
 
 // --- NextAuth Core Tables ---
 
@@ -23,6 +36,7 @@ export const users = pgTable("user", {
   image: text("image"),
   phone: text("phone").unique(),
   phoneVerified: timestamp("phoneVerified", { mode: "date" }),
+  role: userRole("role").notNull().default("user"),
 });
 
 export const accounts = pgTable(
@@ -74,16 +88,22 @@ export const products = pgTable("product", {
   slug: text("slug").notNull().unique(),
   name: text("name").notNull(),
   description: text("description"),
-  price: real("price").notNull(),
+  price: integer("price").notNull(), // GBP in pence
+  salePrice: integer("salePrice"), // GBP in pence; on sale when set and < price
   images: json("images").$type<string[]>(),
   sizes: json("sizes").$type<string[]>(),
   colors: json("colors").$type<{name: string, hex: string}[]>(),
   fabric: text("fabric"),
   care: text("care"),
   fit: text("fit"),
-  category: text("category").notNull(),
+  category: productCategory("category").notNull(),
+  gender: productGender("gender").notNull().default("unisex"),
   inStock: integer("inStock").notNull().default(0),
   features: json("features").$type<{title: string, description: string, image: string}[]>(),
+  archived: boolean("archived").notNull().default(false), // hidden from the storefront, kept for order history
+  featured: boolean("featured").notNull().default(false), // surfaces first on the homepage
+  saleStartsAt: timestamp("saleStartsAt", { mode: "date" }), // null = no start bound
+  saleEndsAt: timestamp("saleEndsAt", { mode: "date" }), // null = no end bound
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
 });
 
@@ -93,11 +113,16 @@ export const orders = pgTable("order", {
     .$defaultFn(() => crypto.randomUUID()),
   userId: text("userId").references(() => users.id, { onDelete: "set null" }),
   stripeSessionId: text("stripeSessionId").unique(),
-  totalAmount: real("totalAmount").notNull(),
+  totalAmount: integer("totalAmount").notNull(), // GBP in pence
   status: text("status").notNull().default("pending"),
   shippingAddress: json("shippingAddress"),
   trackingNumber: text("trackingNumber"),
   trackingUrl: text("trackingUrl"),
+  invoiceUrl: text("invoiceUrl"), // Stripe hosted_invoice_url
+  invoicePdf: text("invoicePdf"), // Stripe invoice_pdf download link
+  couponCode: text("couponCode"), // snapshot of the redeemed code (no FK — survives coupon deletion)
+  discountAmount: integer("discountAmount").notNull().default(0), // GBP in pence
+  oversold: boolean("oversold").notNull().default(false), // settle couldn't decrement stock for some item
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
 });
 
@@ -112,7 +137,7 @@ export const orderItems = pgTable("order_item", {
     .notNull()
     .references(() => products.id),
   quantity: integer("quantity").notNull(),
-  price: real("price").notNull(),
+  price: integer("price").notNull(), // unit price in pence at time of purchase
   size: text("size"),
   color: text("color"),
 });
@@ -127,6 +152,22 @@ export const wishlists = pgTable("wishlist", {
   productId: integer("productId")
     .notNull()
     .references(() => products.id, { onDelete: "cascade" }),
+  createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
+});
+
+export const couponType = pgEnum("coupon_type", ["percent", "fixed"]);
+
+export const coupons = pgTable("coupon", {
+  id: serial("id").primaryKey(),
+  code: text("code").notNull().unique(), // stored uppercase
+  type: couponType("type").notNull(),
+  value: integer("value").notNull(), // percent 1-100, or pence for fixed
+  active: boolean("active").notNull().default(true),
+  startsAt: timestamp("startsAt", { mode: "date" }),
+  endsAt: timestamp("endsAt", { mode: "date" }),
+  maxUses: integer("maxUses"), // null = unlimited
+  usedCount: integer("usedCount").notNull().default(0),
+  minSubtotal: integer("minSubtotal"), // pence, null = none
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
 });
 

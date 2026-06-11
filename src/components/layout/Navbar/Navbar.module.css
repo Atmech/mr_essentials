@@ -71,12 +71,14 @@
   transition: width var(--duration-normal) var(--ease-out);
 }
 
-.link:hover {
-  color: var(--color-black);
-}
+@media (hover: hover) and (pointer: fine) {
+  .link:hover {
+    color: var(--color-black);
+  }
 
-.link:hover::after {
-  width: 100%;
+  .link:hover::after {
+    width: 100%;
+  }
 }
 
 .actions {
@@ -99,6 +101,11 @@
 
 .actionButton:hover {
   color: var(--color-alert-red);
+}
+
+.actionButton:active {
+  transform: scale(0.93);
+  transition: transform 100ms var(--ease-out);
 }
 
 .badge {
@@ -135,7 +142,7 @@
   width: 24px;
   height: 2px;
   background: var(--color-black);
-  transition: all var(--duration-normal) var(--ease-in-out);
+  transition: transform var(--duration-normal) var(--ease-in-out), opacity var(--duration-normal) var(--ease-in-out);
   transform-origin: center;
 }
 
@@ -167,7 +174,7 @@
     padding: var(--space-12) var(--space-6);
     gap: var(--space-6);
     transform: translateX(100%);
-    transition: transform var(--duration-slow) var(--ease-in-out);
+    transition: transform var(--duration-slow) var(--ease-drawer);
     z-index: var(--z-overlay);
   }
 

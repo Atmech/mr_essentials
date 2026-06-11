@@ -1,18 +1,17 @@
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { AdminLogout } from "./AdminLogout";
+import { getAdminSession } from "@/lib/admin";
 
 export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const cookieStore = await cookies();
-  const adminSession = cookieStore.get("admin_session");
-
-  // If no valid session cookie, send to admin login
-  if (adminSession?.value !== process.env.NEXTAUTH_SECRET) {
+  // RBAC gate: only an authenticated admin (role from NextAuth session) may pass.
+  // Middleware blocks at the edge too; this is the server-render backstop.
+  const session = await getAdminSession();
+  if (!session) {
     redirect("/admin/login");
   }
 
@@ -53,6 +52,8 @@ export default async function AdminLayout({
             { href: "/admin", label: "Dashboard" },
             { href: "/admin/products", label: "Products" },
             { href: "/admin/orders", label: "Orders" },
+            { href: "/admin/coupons", label: "Coupons" },
+            { href: "/admin/sales", label: "Sales" },
           ].map(({ href, label }) => (
             <Link
               key={href}

@@ -1,10 +1,5 @@
 import type { Metadata } from "next";
 import { Inter, Space_Mono } from "next/font/google";
-import localFont from "next/font/local";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
-import { CartDrawer } from "@/components/layout/CartDrawer";
-import { SearchOverlay } from "@/components/layout/SearchOverlay";
 import { ToastContainer } from "@/components/layout/ToastContainer";
 import "./globals.css";
 
@@ -41,11 +36,7 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
-        <CartDrawer />
-        <SearchOverlay />
+        {children}
         <ToastContainer />
       </body>
     </html>

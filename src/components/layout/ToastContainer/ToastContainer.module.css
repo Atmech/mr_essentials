@@ -17,11 +17,17 @@
   background: var(--color-black);
   color: var(--color-white);
   border: var(--border-medium);
-  animation: slideIn var(--duration-normal) var(--ease-out);
   font-family: var(--font-mono);
   font-size: var(--text-sm);
   text-transform: uppercase;
   letter-spacing: var(--tracking-wide);
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 250ms var(--ease-out), transform 250ms var(--ease-out);
+  @starting-style {
+    opacity: 0;
+    transform: translateX(100%);
+  }
 }
 
 .toast.success {
@@ -64,16 +70,6 @@
   color: var(--color-white);
 }
 
-@keyframes slideIn {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
 
 @media (max-width: 640px) {
   .container {

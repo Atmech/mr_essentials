@@ -1,17 +1,20 @@
 import { put } from '@vercel/blob';
 import { NextResponse } from 'next/server';
+import { getAdminSession } from '@/lib/admin';
+
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
+const MAX_BYTES = 8 * 1024 * 1024; // 8 MB
+const EXT: Record<string, string> = {
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/webp': 'webp',
+  'image/avif': 'avif',
+};
 
 export async function POST(request: Request): Promise<NextResponse> {
-  const { searchParams } = new URL(request.url);
-  const filename = searchParams.get('filename');
-
-  if (!filename) {
-    return NextResponse.json({ error: 'filename is required' }, { status: 400 });
-  }
-
-  // Ensure user is an admin before allowing upload
-  const adminCookie = request.headers.get("cookie")?.includes("admin_session");
-  if (!adminCookie) {
+  // Authz: real session check, not a cookie-substring match.
+  const session = await getAdminSession();
+  if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -19,14 +22,27 @@ export async function POST(request: Request): Promise<NextResponse> {
     return NextResponse.json({ error: 'Body is required' }, { status: 400 });
   }
 
-  try {
-    const blob = await put(filename, request.body, {
-      access: 'public', // makes the URL accessible on your storefront
-    });
+  const contentType = request.headers.get('content-type') ?? '';
+  if (!ALLOWED_TYPES.includes(contentType)) {
+    return NextResponse.json({ error: 'Only JPEG, PNG, WebP or AVIF images are allowed' }, { status: 415 });
+  }
 
+  // Read the body so we can enforce a size cap and avoid trusting client filenames.
+  const buffer = Buffer.from(await request.arrayBuffer());
+  if (buffer.byteLength === 0) {
+    return NextResponse.json({ error: 'Empty file' }, { status: 400 });
+  }
+  if (buffer.byteLength > MAX_BYTES) {
+    return NextResponse.json({ error: 'File exceeds 8 MB limit' }, { status: 413 });
+  }
+
+  // Generate the storage key server-side — never use a caller-supplied path.
+  const key = `products/${crypto.randomUUID()}.${EXT[contentType]}`;
+
+  try {
+    const blob = await put(key, buffer, { access: 'public', contentType });
     return NextResponse.json(blob);
-  } catch (error) {
-    console.error("Vercel Blob Upload Error:", error);
-    return NextResponse.json({ error: 'Failed to upload: ' + String(error) }, { status: 500 });
+  } catch {
+    return NextResponse.json({ error: 'Failed to upload' }, { status: 500 });
   }
 }

@@ -1,6 +1,6 @@
 import { db } from '@/lib/db';
 import { products } from '@/lib/db/schema';
-import { ilike, or } from 'drizzle-orm';
+import { and, eq, ilike, or } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
@@ -21,10 +21,13 @@ export async function GET(req: NextRequest) {
     })
     .from(products)
     .where(
-      or(
-        ilike(products.name, pattern),
-        ilike(products.category, pattern),
-        ilike(products.description, pattern)
+      and(
+        eq(products.archived, false),
+        or(
+          ilike(products.name, pattern),
+          ilike(products.category, pattern),
+          ilike(products.description, pattern)
+        )
       )
     )
     .limit(10);

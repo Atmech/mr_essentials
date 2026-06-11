@@ -14,10 +14,12 @@ export interface CartItem {
 
 interface CartState {
   items: CartItem[];
+  couponCode: string;
   isOpen: boolean;
   addItem: (item: CartItem) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
+  setCouponCode: (code: string) => void;
   clearCart: () => void;
   toggleCart: () => void;
   openCart: () => void;
@@ -28,6 +30,7 @@ export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
       items: [],
+      couponCode: '',
       isOpen: false,
       addItem: (item) => {
         const currentItems = get().items;
@@ -55,14 +58,16 @@ export const useCartStore = create<CartState>()(
                 i.id === id ? { ...i, quantity } : i
               ),
         })),
-      clearCart: () => set({ items: [] }),
+      setCouponCode: (code) => set({ couponCode: code.toUpperCase() }),
+      clearCart: () => set({ items: [], couponCode: '' }),
       toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
       openCart: () => set({ isOpen: true }),
       closeCart: () => set({ isOpen: false }),
     }),
     {
       name: 'mr-essentials-cart',
-      partialize: (state) => ({ items: state.items }), // Only persist items, not UI state
+      // Persist items + coupon (survives the login round trip), not UI state.
+      partialize: (state) => ({ items: state.items, couponCode: state.couponCode }),
     }
   )
 );
